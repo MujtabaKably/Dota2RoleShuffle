@@ -1,0 +1,43 @@
+.AlignCenter {
+    text-align: center;
+}
+
+.Margin25px {
+    margin: 25px;
+}
+
+.Margin5px {
+    margin: 5px;
+}
+
+.FontSize16 {
+    font-size: 12px;
+    padding: 4px !important;
+}
+
+.MarginBot5 {
+    margin-bottom: 5px;
+}
+
+.MarginTop5 {
+    margin-top: 5px;
+}
+
+.list-group-item:hover {
+    background-color: rgba(202, 202, 202, 0.3);
+}
+
+.PaddingBottom {
+    padding-bottom: 10px;
+}
+.hidden{
+    display: none;
+}
+.padding15px{
+    padding: 15px;
+}
+@media (max-width: 767px) {
+    .SpaceSaver {
+        display: none;
+    }
+}

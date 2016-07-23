@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Role Selector</title>
+    <link rel="stylesheet" href="Include/bootstrap/css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" href="Include/MyStyles.css" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="page-header">
+        <h2>Dota 2 Team Role Shuffle</h2>
+    </div>
+    <div class="row MarginBot5">
+        <div class="col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 col-xs-12">
+            <div class="btn-group" id="Teams">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 col-xs-12">
+            <div class="input-group PaddingBottom">
+                <span class="input-group-addon"><b>Player Name</b></span>
+                <input type="text" class="form-control" placeholder="Player Name" id="txtPlayerName"
+                       onkeydown="return MVP.View.onEnter(event);"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="MVP.View.getPlayerData();">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                        <button class="btn btn-danger" type="button" onclick="MVP.View.deletePlayers();">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </span>
+            </div>
+            <input type="text" id="txtTeamName" class="form-control" placeholder="Team Name"/>
+            <input type="hidden" id="hidTeamId"/>
+        </div>
+    </div>
+    <div class="row MarginTop5">
+        <div class="col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 col-xs-12">
+            <ul class="list-group" id="ULPlayers">
+
+            </ul>
+        </div>
+    </div>
+    <div class="row AlignCenter Margin25px">
+        <div class="col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 col-xs-12">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success" onclick="MVP.View.getTeamName();" title="Save Team">
+                    <span class="glyphicon glyphicon-save"></span>
+                    <span class="SpaceSaver">Save Team</span>
+                </button>
+                <button type="button" class="btn btn-primary" onclick="MVP.View.shuffleRoles();" title="Shuffle Roles">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                    <span class="SpaceSaver">Shuffle Roles</span>
+                </button>
+                <button type="button" class="btn btn-warning" onclick="MVP.View.clearTeam();" title="Clear">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    <span class="SpaceSaver">Clear</span>
+                </button>
+                <button type="button" class="btn btn-danger" onclick="MVP.View.deleteTeam();" title="Delete Team">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    <span class="SpaceSaver">Delete Team</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row AlignCenter Margin25px">
+        <div class="col-lg-offset-5 col-lg-2 col-md-offset-5 col-md-2 col-sm-offset-4 col-sm-4 col-xs-12">
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#NotifyC"
+                    title="Reset Application">
+                <span class="glyphicon glyphicon-repeat"></span>
+                <span class="">Reset Application</span>
+            </button>
+
+        </div>
+    </div>
+    <div class="hidden">
+        <button data-toggle="modal" data-target="#Notify" type="button" id="btnAlert"></button>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="Notify">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">
+                    Alert</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert" id="Div1">
+                    <span class="glyphicon glyphicon-alert"></span><span class="padding15px" id="spnNotify"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="btn_CloseDlg">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="NotifyC">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">
+                    Alert</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert" id="Div1">
+                    <span class="glyphicon glyphicon-erase"></span><span class="padding15px" id="">
+                    this will clear all the Teams stored on your Device
+                </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="MVP.View.resetApplication();"
+                        id="">
+                    Reset Application
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="Include/jquery/jquery-2.2.2.min.js" language="JavaScript"></script>
+<script type="text/javascript" src="Include/bootstrap/js/bootstrap.min.js" language="JavaScript"></script>
+<script type="text/javascript" language="javascript">
+    var MVP = {
+        Model: {
+            Position: ["", "HARD Carry", "Mid / Semi-Carry", "Off-Lane", "Support", "HARD SUPPORT"],
+            Color: ["default", "success", "info", "primary", "warning", "danger"],
+            TeamList: [],
+            SelectedTeam: {},
+            InitTeamModel: function () {
+                //Setting Up Default Elements in LS
+                if (localStorage.getItem("TeamList") == undefined || localStorage.getItem("TeamList") == null) {
+                    var TeamList = [];
+                    TeamList.push({
+                        TeamName: "Random Players",
+                        TeamColor: Math.ceil(((Math.random() * ((6 - 1) + 1)) - 1)),
+                        Players: [
+                            {PlayerName: "Player 1", Position: 0},
+                            {PlayerName: "Player 2", Position: 0},
+                            {PlayerName: "Player 3", Position: 0},
+                            {PlayerName: "Player 4", Position: 0},
+                            {PlayerName: "Player 5", Position: 0}
+                        ]
+                    });
+                    localStorage.setItem("TeamList", JSON.stringify(TeamList));
+                }
+                MVP.Model.TeamList = JSON.parse(localStorage.getItem("TeamList"));
+            },
+            InitSelectedTeam: function () {
+                if (Object.keys(MVP.Model.SelectedTeam).length == 0) {
+                    MVP.Model.SelectedTeam.TeamName = "";
+                    MVP.Model.SelectedTeam.Players = [];
+                }
+            },
+            ResetSelectedTeam: function () {
+                MVP.Model.SelectedTeam = {};
+            },
+            UpdateLocalStorage: function () {
+                localStorage.setItem("TeamList", JSON.stringify(MVP.Model.TeamList));
+            },
+            ClearLocalStorage: function () {
+                localStorage.clear();
+            }
+        },
+        Presenter: {
+            InitTeams: function () {
+                MVP.Model.InitTeamModel();
+                MVP.View.renderTeams(MVP.Model.TeamList);
+            },
+            AddNewTeam: function (TeamName) {
+                MVP.Model.InitSelectedTeam();
+                if (TeamName != "") {
+                    MVP.Model.SelectedTeam.TeamName = TeamName;
+                    MVP.Model.SelectedTeam.TeamColor = Math.ceil(((Math.random() * ((6 - 1) + 1)) - 1));
+                    if (MVP.Model.SelectedTeam.Players.length < 5) {
+                        MVP.View.Notify("Team should have 5 players");
+                    }
+                    else {
+                        if (MVP.Model.SelectedTeam.TeamId != "" && MVP.Model.SelectedTeam.TeamId != undefined && MVP.Model.SelectedTeam != null) {
+                            MVP.Model.TeamList[MVP.Model.SelectedTeam.TeamId] = MVP.Model.SelectedTeam;
+                        }
+                        else {
+                            MVP.Model.TeamList.push(MVP.Model.SelectedTeam);
+                        }
+                        MVP.Presenter.ReRenderAll();
+                    }
+                }
+                else {
+                    MVP.View.Notify("Team Name Cannot be Blank");
+                }
+            },
+            ReRenderAll: function () {
+                MVP.Model.ResetSelectedTeam();
+                MVP.View.renderPlayers(MVP.Model.SelectedTeam);
+                MVP.View.renderTeams(MVP.Model.TeamList);
+                MVP.Model.UpdateLocalStorage();
+            },
+            SelectTeam: function (TeamId) {
+                MVP.Model.SelectedTeam = JSON.parse(JSON.stringify(MVP.Model.TeamList[TeamId]));
+                MVP.Model.SelectedTeam.TeamId = TeamId;
+                MVP.View.renderPlayers(MVP.Model.SelectedTeam);
+            },
+            AddPlayers: function (newPlayerName) {
+                MVP.Model.InitSelectedTeam();
+                if (MVP.Model.SelectedTeam.Players.length < 5) {
+                    if (newPlayerName != "") {
+                        MVP.Model.SelectedTeam.Players.push({PlayerName: newPlayerName, Position: 0});
+                        MVP.View.renderPlayers(MVP.Model.SelectedTeam);
+                    }
+                    else {
+                        MVP.View.Notify("Player Name cannot be Blank");
+                    }
+                }
+                else {
+                    MVP.View.Notify("A team cannot have more than 5 players");
+                }
+            },
+            DeletePlayers: function (DelPlayers) {
+                MVP.Model.InitSelectedTeam();
+                var newArr = [];
+                for (var y in DelPlayers) {
+                    newArr.push(MVP.Model.SelectedTeam.Players[DelPlayers[y]]);
+                }
+                MVP.Model.SelectedTeam.Players = newArr;
+                MVP.Presenter.resetPositions();
+                MVP.View.renderPlayers(MVP.Model.SelectedTeam);
+            },
+            LogTeamList: function () {
+                console.log(MVP.TeamList);
+            },
+            clearSelected: function () {
+                MVP.Model.ResetSelectedTeam();
+                MVP.View.renderPlayers(MVP.Model.SelectedTeam);
+            },
+            shuffle: function () {
+                MVP.Model.InitSelectedTeam();
+                if (MVP.Model.SelectedTeam.Players.length < 5) {
+                    MVP.View.Notify("Please Enter 5 Players to Shuffle Roles");
+                }
+                else {
+                    var array = MVP.Presenter.ShuffleLogic([1, 2, 3, 4, 5]);
+                    for (var x in array) {
+                        MVP.Model.SelectedTeam.Players[x].Position = array[x];
+                    }
+                    MVP.View.renderPlayers(MVP.Model.SelectedTeam);
+                }
+            },
+            resetPositions: function () {
+                for (var x in MVP.Model.SelectedTeam.Players) {
+                    MVP.Model.SelectedTeam.Players[x].Position = 0;
+                }
+            },
+            ShuffleLogic: function (Array) {
+                var counter = Array.length;
+                while (counter > 0) {
+                    var index = Math.floor(Math.random() * counter);
+                    counter--;
+                    var temp = Array[counter];
+                    Array[counter] = Array[index];
+                    Array[index] = temp;
+                }
+                return Array;
+            },
+            DeleteTeam: function () {
+                if (MVP.Model.SelectedTeam.TeamId != "" && MVP.Model.SelectedTeam.TeamId != undefined && MVP.Model.SelectedTeam != null) {
+                    MVP.Model.TeamList.splice(MVP.Model.SelectedTeam.TeamId, 1);
+                    MVP.Presenter.ReRenderAll();
+                }
+                else {
+                    MVP.View.Notify("Team Not Saved.");
+                }
+            },
+            ResetApp: function () {
+                MVP.Model.ClearLocalStorage();
+                MVP.Presenter.InitTeams();
+                MVP.Presenter.ReRenderAll();
+            }
+        },
+        View: {
+            renderTeams: function (TeamList) {
+                var TeamTemplate = '<button type="button" class="btn btn-{{TeamColor}} btn-xs Players Auto" value="{{TeamId}}" onclick="MVP.View.getTeamId(this);">{{TeamName}}</button>';
+                var teamHtml = '';
+                for (var x in TeamList) {
+                    teamHtml += TeamTemplate.replace('{{TeamName}}', TeamList[x].TeamName).replace('{{TeamId}}', x).replace('{{TeamColor}}', MVP.Model.Color[TeamList[x].TeamColor]);
+                }
+                document.getElementById("Teams").innerHTML = teamHtml;
+            },
+            renderPlayers: function (SelectedTeam) {
+                var playerhtml = '';
+                MVP.View.resetFields();
+                if (SelectedTeam.Players != undefined && SelectedTeam.TeamName != undefined) {
+                    var PlayerTemplate = '<li class="list-group-item list-group-item-{{Color}}" onclick="MVP.View.togglePlayerSelect(this)"><h6><b>{{PlayerName}}</b><span class="FontSize16 pull-right label label-{{Color}}">{{PosNo}} {{Position}}</span></h6></li>';
+                    document.getElementById("txtTeamName").value = SelectedTeam.TeamName;
+                    document.getElementById("hidTeamId").value = SelectedTeam.TeamId;
+                    for (var x in SelectedTeam.Players) {
+                        playerhtml += PlayerTemplate.replace('{{PlayerName}}', SelectedTeam.Players[x].PlayerName);
+                        playerhtml = playerhtml.replace('{{Color}}', MVP.Model.Color[SelectedTeam.Players[x].Position]);
+                        playerhtml = playerhtml.replace('{{Color}}', MVP.Model.Color[SelectedTeam.Players[x].Position]);
+                        playerhtml = playerhtml.replace('{{Position}}', SelectedTeam.Players[x].Position == 0 ? "" : '(' + MVP.Model.Position[SelectedTeam.Players[x].Position] + ')');
+                        playerhtml = playerhtml.replace('{{PosNo}}', SelectedTeam.Players[x].Position == 0 ? "" : "Position " + SelectedTeam.Players[x].Position);
+                    }
+                }
+                document.getElementById("ULPlayers").innerHTML = playerhtml;
+                document.getElementById("txtPlayerName").focus();
+            },
+            getTeamId: function (btn) {
+                MVP.Presenter.SelectTeam(btn.value);
+            },
+            clearTeam: function () {
+                MVP.Presenter.clearSelected();
+            },
+            getPlayerData: function () {
+                MVP.Presenter.AddPlayers(document.getElementById("txtPlayerName").value);
+            },
+            resetFields: function () {
+                document.getElementById("txtTeamName").value = "";
+                document.getElementById("txtPlayerName").value = "";
+                document.getElementById("hidTeamId").value = "";
+            },
+            getTeamName: function () {
+                MVP.Presenter.AddNewTeam(document.getElementById("txtTeamName").value);
+            },
+            Notify: function (Message) {
+                document.getElementById("spnNotify").innerText = Message;
+                document.getElementById("btnAlert").click();
+                setTimeout(function () {
+                    document.getElementById("btn_CloseDlg").focus();
+                }, 500);
+            },
+            deletePlayers: function () {
+                var DelArray = [];
+                var SelVals = document.getElementsByClassName("list-group-item");
+                if (SelVals.length > 0) {
+                    for (var x = 0; x < SelVals.length; x++) {
+                        if (SelVals[x].className.indexOf("active") == -1) {
+                            DelArray.push(x);
+                        }
+                    }
+                }
+                MVP.Presenter.DeletePlayers(DelArray.length == 5 ? [] : DelArray);
+            },
+            togglePlayerSelect: function (List) {
+                List.className = ' ' + List.className + ' ';
+                if (List.className.indexOf(' active ') == -1) {
+                    List.className += ' active ';
+                }
+                else {
+                    List.className = List.className.replace('active', '');
+                }
+                List.className = List.className.trim();
+            },
+            shuffleRoles: function () {
+                MVP.Presenter.shuffle();
+            },
+            deleteTeam: function () {
+                MVP.Presenter.DeleteTeam();
+            },
+            onEnter: function (evt) {
+                if (evt.keyCode == 13) {
+                    MVP.View.getPlayerData();
+                }
+            },
+            resetApplication: function () {
+                MVP.Presenter.ResetApp();
+            }
+        }
+    };
+    (function () {
+        MVP.Presenter.InitTeams();
+    })();
+</script>
+</body>
+</html>
